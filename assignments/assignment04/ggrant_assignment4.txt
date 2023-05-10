@@ -1,0 +1,292 @@
+mysql> source /home/garretg/foothillCollege/databaseFHC/assignmentScripts/assignment04/ggrant_assignment4.sql
+--------------
+/*  Assignment4.sql 
+    Garret Grant
+    CS 31A, Spring 2023 */
+--
+-- Current Database: `megastore`
+--
+
+USE megastore
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+/* Query 1*/
+CREATE TABLE GLOBAL_LOCATIONS (
+    id INT (4),
+    loc_name VARCHAR(20), 
+    address VARCHAR(20),
+    city VARCHAR(20),
+    zip_postal_code VARCHAR(20),
+    phone VARCHAR(20),
+    email VARCHAR(20),
+    manager_id INT(4),
+    emergency_contact VARCHAR(20),
+    UNIQUE (email),
+    PRIMARY KEY (id)
+) ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+--------------
+DESCRIBE GLOBAL_LOCATIONS
+--------------
+
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| id                | int         | NO   | PRI | NULL    |       |
+| loc_name          | varchar(20) | YES  |     | NULL    |       |
+| address           | varchar(20) | YES  |     | NULL    |       |
+| city              | varchar(20) | YES  |     | NULL    |       |
+| zip_postal_code   | varchar(20) | YES  |     | NULL    |       |
+| phone             | varchar(20) | YES  |     | NULL    |       |
+| email             | varchar(20) | YES  | UNI | NULL    |       |
+| manager_id        | int         | YES  |     | NULL    |       |
+| emergency_contact | varchar(20) | YES  |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+9 rows in set (0.01 sec)
+
+--------------
+/* Query 2 */
+/*
+    Wrapping question 2 in comments as the instructions
+    say not to execute
+CREATE TABLE LOCATIONS (
+    loc_id INT (4),
+    loc_postal_code VARCHAR(12) NOT NULL, 
+    loc_street_address VARCHAR(25) NOT NULL,
+    loc_city VARCHAR(25) NOT NULL,
+    loc_state_province VARCHAR(25) NOT NULL,
+    loc_country_id CHAR(2) NOT NULL,
+    loc_type VARCHAR(25),
+    PRIMARY KEY (loc_id)
+) ENGINE = INNODB;
+*/
+
+/* Query 3 */
+ALTER TABLE GLOBAL_LOCATIONS
+    ADD date_opened DATE
+--------------
+
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+DESCRIBE GLOBAL_LOCATIONS
+--------------
+
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| id                | int         | NO   | PRI | NULL    |       |
+| loc_name          | varchar(20) | YES  |     | NULL    |       |
+| address           | varchar(20) | YES  |     | NULL    |       |
+| city              | varchar(20) | YES  |     | NULL    |       |
+| zip_postal_code   | varchar(20) | YES  |     | NULL    |       |
+| phone             | varchar(20) | YES  |     | NULL    |       |
+| email             | varchar(20) | YES  | UNI | NULL    |       |
+| manager_id        | int         | YES  |     | NULL    |       |
+| emergency_contact | varchar(20) | YES  |     | NULL    |       |
+| date_opened       | date        | YES  |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+10 rows in set (0.00 sec)
+
+--------------
+/* Query 4 */
+SHOW COLUMNS FROM GLOBAL_LOCATIONS
+--------------
+
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| id                | int         | NO   | PRI | NULL    |       |
+| loc_name          | varchar(20) | YES  |     | NULL    |       |
+| address           | varchar(20) | YES  |     | NULL    |       |
+| city              | varchar(20) | YES  |     | NULL    |       |
+| zip_postal_code   | varchar(20) | YES  |     | NULL    |       |
+| phone             | varchar(20) | YES  |     | NULL    |       |
+| email             | varchar(20) | YES  | UNI | NULL    |       |
+| manager_id        | int         | YES  |     | NULL    |       |
+| emergency_contact | varchar(20) | YES  |     | NULL    |       |
+| date_opened       | date        | YES  |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+10 rows in set (0.00 sec)
+
+--------------
+/* Query 5 */
+ALTER TABLE GLOBAL_LOCATIONS
+    DROP COLUMN date_opened
+--------------
+
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+/* Query 6 */
+RENAME TABLE GLOBAL_LOCATIONS TO GLOBAL_LOCATIONS_BACKUP
+--------------
+
+Query OK, 0 rows affected (0.04 sec)
+
+--------------
+/* Query 7 */
+CREATE TABLE EMPLOYEE_PAY(
+    employee_id INT, 
+    ssn CHAR(11),
+    salalry NUMERIC(8,2) NOT NULL,
+    hire_date DATE NOT NULL,
+    PRIMARY KEY (employee_id),
+    UNIQUE (SSN)
+) ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected (0.03 sec)
+
+--------------
+/* Query 8 */
+INSERT INTO EMPLOYEE_PAY (employee_id, ssn, salalry, hire_date)
+VALUES (184167702,'744-04-9444',5500,'2011-03-15')
+--------------
+
+Query OK, 1 row affected (0.01 sec)
+
+--------------
+SELECT * FROM EMPLOYEE_PAY
+--------------
+
++-------------+-------------+---------+------------+
+| employee_id | ssn         | salalry | hire_date  |
++-------------+-------------+---------+------------+
+|   184167702 | 744-04-9444 | 5500.00 | 2011-03-15 |
++-------------+-------------+---------+------------+
+1 row in set (0.00 sec)
+
+--------------
+/* Query 9 */
+DESCRIBE EMPLOYEE_PAY
+--------------
+
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| employee_id | int          | NO   | PRI | NULL    |       |
+| ssn         | char(11)     | YES  | UNI | NULL    |       |
+| salalry     | decimal(8,2) | NO   |     | NULL    |       |
+| hire_date   | date         | NO   |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+--------------
+ALTER TABLE EMPLOYEE_PAY
+ADD e_address VARCHAR(30)
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+DESCRIBE EMPLOYEE_PAY
+--------------
+
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| employee_id | int          | NO   | PRI | NULL    |       |
+| ssn         | char(11)     | YES  | UNI | NULL    |       |
+| salalry     | decimal(8,2) | NO   |     | NULL    |       |
+| hire_date   | date         | NO   |     | NULL    |       |
+| e_address   | varchar(30)  | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+--------------
+/*  Query 10 */
+SHOW TABLES
+--------------
+
++-------------------------+
+| Tables_in_megastore     |
++-------------------------+
+| EMPLOYEE_PAY            |
+| GLOBAL_LOCATIONS_BACKUP |
+| categories              |
+| credit_ratings          |
+| cust_address            |
+| customers               |
+| departments             |
+| employees               |
+| inventory               |
+| jobs                    |
+| locations               |
+| order_details           |
+| orders                  |
+| products                |
+| shipping_modes          |
+| warehouses              |
++-------------------------+
+16 rows in set (0.01 sec)
+
+--------------
+/* Query 11 */
+ALTER TABLE EMPLOYEE_PAY
+DROP COLUMN e_address
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+/*  Query 12 */
+DROP TABLE GLOBAL_LOCATIONS_BACKUP
+--------------
+
+Query OK, 0 rows affected (0.02 sec)
+
+--------------
+SHOW TABLES
+--------------
+
++---------------------+
+| Tables_in_megastore |
++---------------------+
+| EMPLOYEE_PAY        |
+| categories          |
+| credit_ratings      |
+| cust_address        |
+| customers           |
+| departments         |
+| employees           |
+| inventory           |
+| jobs                |
+| locations           |
+| order_details       |
+| orders              |
+| products            |
+| shipping_modes      |
+| warehouses          |
++---------------------+
+15 rows in set (0.00 sec)
+
+--------------
+/*  Query 13 */
+INSERT INTO categories (catg_id, catg_desc)
+VALUES ('FU', 'feurniture')
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+/*  Query 14 */
+UPDATE categories
+SET catg_desc = 'furniture'
+WHERE catg_id = 'FU'
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> notee
