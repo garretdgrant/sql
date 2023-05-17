@@ -1,0 +1,333 @@
+mysql> source /home/garretg/foothillCollege/databaseFHC/sql/assignments/assignment07/ggrant_assignment7.sql
+--------------
+/*  Assignment7.sql 
+    Garret Grant
+    CS 31A, Spring 2023 */
+--
+-- Current Database: `megastore`
+--
+
+USE megastore
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+/* Query 1*/
+SELECT prod_id, prod_desc, prod_list_price
+FROM products
+WHERE prod_list_price IN (
+    SELECT MIN(prod_list_price)
+    FROM products
+)
+--------------
+
++---------+-----------------------------------------+-----------------+
+| prod_id | prod_desc                               | prod_list_price |
++---------+-----------------------------------------+-----------------+
+|    1142 | Bird seed mix with sunflowers           |            2.50 |
+|    1143 | Bird seed mix with more sunflower seeds |            2.50 |
++---------+-----------------------------------------+-----------------+
+2 rows in set (0.00 sec)
+
+--------------
+/* Query 2 */
+SELECT cust_id, first_name, last_name
+FROM customers
+WHERE cust_id IN (
+    SELECT cust_id
+    FROM orders
+    WHERE ord_date = '2013-10-01'
+)
+--------------
+
++---------+------------+-----------+
+| cust_id | first_name | last_name |
++---------+------------+-----------+
+|  403000 | Sally      | Williams  |
+|  401250 | Samuel     | Morse     |
++---------+------------+-----------+
+2 rows in set (0.00 sec)
+
+--------------
+/* Query 3 */
+SELECT cust_id, first_name, last_name
+FROM customers
+WHERE EXISTS (
+    SELECT cust_id
+    FROM orders
+    WHERE orders.cust_id = customers.cust_id AND ord_date = '2013-10-01'
+)
+--------------
+
++---------+------------+-----------+
+| cust_id | first_name | last_name |
++---------+------------+-----------+
+|  403000 | Sally      | Williams  |
+|  401250 | Samuel     | Morse     |
++---------+------------+-----------+
+2 rows in set (0.00 sec)
+
+--------------
+/* Query 4 */
+SELECT ord_id, ord_date
+FROM orders
+WHERE cust_id IN
+(
+    SELECT cust_id
+    FROM customers
+    WHERE first_name = 'William' AND last_name = 'Morris'
+)
+--------------
+
++--------+---------------------+
+| ord_id | ord_date            |
++--------+---------------------+
+|    110 | 2013-10-12 00:00:00 |
+|    408 | 2013-11-20 00:00:00 |
+|    411 | 2014-07-01 00:00:00 |
+|    510 | 2014-02-01 00:00:00 |
+|    535 | 2014-05-12 00:00:00 |
+|    540 | 2014-06-02 00:00:00 |
++--------+---------------------+
+6 rows in set (0.00 sec)
+
+--------------
+/* Query 5 */
+SELECT prod_id, prod_desc, catg_id, prod_list_price
+FROM products
+WHERE prod_list_price > ALL
+(
+    SELECT prod_list_price
+    FROM products
+    WHERE catg_id = 'PET'
+)
+--------------
+
++---------+-------------------------------+---------+-----------------+
+| prod_id | prod_desc                     | catg_id | prod_list_price |
++---------+-------------------------------+---------+-----------------+
+|    1126 | Low Energy washer Dryer combo | APL     |          850.00 |
++---------+-------------------------------+---------+-----------------+
+1 row in set (0.00 sec)
+
+--------------
+/* Query 6 */
+SELECT emp_id, last_name, first_name, manager_id as emp_mng,
+    dept_id, hire_date, salary, job_id
+FROM employees
+WHERE salary > ANY
+(
+    SELECT salary
+    FROM employees
+    WHERE last_name = 'Davies'
+) AND dept_id IN (
+    SELECT dept_id
+    FROM employees
+    WHERE last_name = 'Bell'
+)
+--------------
+
++--------+-----------+------------+---------+---------+------------+---------+------------+
+| emp_id | last_name | first_name | emp_mng | dept_id | hire_date  | salary  | job_id     |
++--------+-----------+------------+---------+---------+------------+---------+------------+
+|    124 | Mourgos   | Kevin      |     100 |      50 | 2011-11-16 | 5800.00 | ST_MAN     |
+|    141 | Rajs      | Trenna     |     124 |      50 | 2010-10-17 | 3500.00 | ST_CLERK   |
+|    216 | Bell      | George     |     124 |      50 | 2014-04-01 | 3500.00 | SR_ST_CLRK |
++--------+-----------+------------+---------+---------+------------+---------+------------+
+3 rows in set (0.00 sec)
+
+--------------
+/* Query 7 */
+SELECT dept_id, MIN(salary) as 'Min minimum'
+FROM employees
+GROUP BY dept_id
+HAVING MIN(salary) > 
+(
+    SELECT MIN(salary)
+    FROM employees
+    WHERE dept_id != 50
+)
+--------------
+
++---------+-------------+
+| dept_id | Min minimum |
++---------+-------------+
+|    NULL |     7000.00 |
+|      10 |     4100.00 |
+|      60 |     4200.00 |
+|      80 |     8600.00 |
+|      85 |     7300.00 |
+|      90 |    17000.00 |
+|     110 |     5200.00 |
++---------+-------------+
+7 rows in set (0.00 sec)
+
+--------------
+/* Query 8 */
+SELECT last_name
+FROM employees
+WHERE salary IN 
+(
+    SELECT MIN(salary)
+    FROM employees
+    GROUP BY dept_id
+)
+--------------
+
++----------------+
+| last_name      |
++----------------+
+| Kochhar        |
+| De Haan        |
+| Lorentz        |
+| Vargas         |
+| Taylor         |
+| Grant          |
+| Alves Rocha    |
+| Almeida Castro |
+| Steiner        |
+| Stocks         |
+| Ricci          |
+| Loermans       |
++----------------+
+12 rows in set (0.00 sec)
+
+--------------
+/* Query 9 */
+SELECT last_name, first_name, dept_id, manager_id as emp_mng
+FROM employees
+WHERE (dept_id, manager_id) IN
+(
+    SELECT dept_id, manager_id
+    FROM employees
+    WHERE emp_id = 107
+) AND emp_id != 107
+--------------
+
++-----------+------------+---------+---------+
+| last_name | first_name | dept_id | emp_mng |
++-----------+------------+---------+---------+
+| Ernst     | Bruce      |      60 |     103 |
+| Li        | Chen       |      60 |     103 |
+| Fontaine  | Alain      |      60 |     103 |
++-----------+------------+---------+---------+
+3 rows in set (0.00 sec)
+
+--------------
+/*  
+    Query 10
+    Assuming employee 107 Should not be in results since
+    example output from assignment only returns 3 rows
+ */
+SELECT last_name, first_name, dept_id, manager_id as emp_mng
+FROM employees
+WHERE dept_id IN
+(
+    SELECT dept_id
+    FROM employees
+    WHERE emp_id = 107
+) AND manager_id IN (
+    SELECT manager_id
+    FROM employees
+    WHERE emp_id = 107
+) AND emp_id != 107
+--------------
+
++-----------+------------+---------+---------+
+| last_name | first_name | dept_id | emp_mng |
++-----------+------------+---------+---------+
+| Ernst     | Bruce      |      60 |     103 |
+| Li        | Chen       |      60 |     103 |
+| Fontaine  | Alain      |      60 |     103 |
++-----------+------------+---------+---------+
+3 rows in set (0.00 sec)
+
+--------------
+/* Query 11 */
+SELECT last_name, dept_id, salary
+FROM employees
+WHERE salary IN
+(
+    SELECT MAX(salary)
+    FROM employees
+    GROUP BY dept_id
+)
+--------------
+
++---------------+---------+----------+
+| last_name     | dept_id | salary   |
++---------------+---------+----------+
+| King          |      90 | 24000.00 |
+| Hunold        |      60 |  9000.00 |
+| Mourgos       |      50 |  5800.00 |
+| Abel          |      80 | 11000.00 |
+| Grant         |    NULL |  7000.00 |
+| Whalen        |      10 |  4400.00 |
+| Hartstein     |      20 | 13000.00 |
+| Higgins       |     110 | 12000.00 |
+| Barbosa Souza |      85 |  9500.00 |
+| Saikawa       |      10 |  4400.00 |
++---------------+---------+----------+
+10 rows in set (0.01 sec)
+
+--------------
+/*  Query 12 */
+SELECT cust_id, last_name
+FROM customers
+WHERE cust_id IN
+(
+    SELECT o.cust_id
+    FROM orders o
+    JOIN order_details d
+    ON o.ord_id = d.ord_id
+    WHERE d.prod_id IN (1050,1060)
+)
+--------------
+
++---------+-----------+
+| cust_id | last_name |
++---------+-----------+
+|  903000 | McGold    |
+|  408770 | Clay      |
+|  404950 | Morris    |
+|  403000 | Williams  |
+|  401250 | Morse     |
+|  409030 | Mazur     |
+|  404100 | Button    |
++---------+-----------+
+7 rows in set (0.00 sec)
+
+--------------
+/*  Query 13 */
+SELECT catg_id as catg, prod_id, prod_desc as product, prod_list_price as price
+FROM products
+WHERE prod_id NOT IN
+(
+    SELECT prod_id
+    FROM order_details
+)
+--------------
+
++------+---------+----------------------------------------------+--------+
+| catg | prod_id | product                                      | price  |
++------+---------+----------------------------------------------+--------+
+| APL  |    1126 | Low Energy washer Dryer combo                | 850.00 |
+| PET  |    1142 | Bird seed mix with sunflowers                |   2.50 |
+| PET  |    1143 | Bird seed mix with more sunflower seeds      |   2.50 |
+| HW   |    1160 | Stand Mixer with attachments                 | 149.99 |
+| MUS  |    2234 | Charles Mingus - Pithecanthropus Erectus     |  15.88 |
+| MUS  |    2337 | John Coltrane - Blue Train                   |  15.87 |
+| MUS  |    2487 | Stanley Turrentine - Don't Mess With Mr. T   |   9.45 |
+| MUS  |    2933 | David Newman - I Remember Brother Ray        |  12.45 |
+| MUS  |    2987 | Stanley Turrentine - Ballads                 |  15.87 |
+| PET  |    4567 | Our highest end cat tree- you gotta see this | 549.99 |
+| PET  |    4568 | Satin four-poster cat bed                    | 549.99 |
+| APL  |    4569 | Sized for the apartment                      | 349.95 |
+| HW   |    4575 | GE model 34PG98                              |  49.95 |
+| GFD  |    5000 | Cello bag of mixed fingerling potatoes       |  12.50 |
+| GFD  |    5001 | Dundee Ginger Preserve 12 oz jar             |   5.00 |
++------+---------+----------------------------------------------+--------+
+15 rows in set (0.00 sec)
+
+mysql> notee
