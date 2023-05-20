@@ -1,0 +1,336 @@
+mysql> source /home/garretg/foothillCollege/databaseFHC/sql/assignments/assignment08/ggrant_assignment8.sql
+--------------
+/*  Assignment7.sql 
+    Garret Grant
+    CS 31A, Spring 2023 */
+--
+-- Current Database: `megastore`
+--
+
+USE megastore
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+/* Query 1*/
+SELECT e.last_name,  e.salary, e.dept_id,  m_sals.m_sal
+FROM employees e
+JOIN
+(SELECT dept_id, MAX(salary) as m_sal
+FROM employees
+GROUP BY dept_id) as m_sals
+WHERE e.dept_id = m_sals.dept_id
+--------------
+
++----------------+----------+---------+----------+
+| last_name      | salary   | dept_id | m_sal    |
++----------------+----------+---------+----------+
+| Whalen         |  4400.00 |      10 |  4400.00 |
+| Hernandez      |  4300.00 |      10 |  4400.00 |
+| Ricci          |  4100.00 |      10 |  4400.00 |
+| Saikawa        |  4400.00 |      10 |  4400.00 |
+| Hartstein      | 13000.00 |      20 | 13000.00 |
+| Fay            |  3900.00 |      20 | 13000.00 |
+| Steiner        |  8600.00 |      20 | 13000.00 |
+| TAYLOR         |  4000.00 |      20 | 13000.00 |
+| Stocks         |  3700.00 |      20 | 13000.00 |
+| Safwah         |  5000.00 |      20 | 13000.00 |
+| Newton         |  4900.00 |      20 | 13000.00 |
+| Mourgos        |  5800.00 |      50 |  5800.00 |
+| Rajs           |  3500.00 |      50 |  5800.00 |
+| Davies         |  3100.00 |      50 |  5800.00 |
+| Matos          |  2600.00 |      50 |  5800.00 |
+| Vargas         |  2500.00 |      50 |  5800.00 |
+| Bell           |  3500.00 |      50 |  5800.00 |
+| Heiden         |  2600.00 |      50 |  5800.00 |
+| Hunold         |  9000.00 |      60 |  9000.00 |
+| Ernst          |  6000.00 |      60 |  9000.00 |
+| Lorentz        |  4200.00 |      60 |  9000.00 |
+| Li             |  8000.00 |      60 |  9000.00 |
+| Fontaine       |  7800.00 |      60 |  9000.00 |
+| Zlotkey        | 10500.00 |      80 | 11000.00 |
+| Abel           | 11000.00 |      80 | 11000.00 |
+| Taylor         |  8600.00 |      80 | 11000.00 |
+| Hooper         |  9600.00 |      80 | 11000.00 |
+| Barbosa Souza  |  9500.00 |      85 |  9500.00 |
+| Silva Pinto    |  7500.00 |      85 |  9500.00 |
+| Alves Rocha    |  7300.00 |      85 |  9500.00 |
+| Almeida Castro |  7300.00 |      85 |  9500.00 |
+| King           | 24000.00 |      90 | 24000.00 |
+| Kochhar        | 17000.00 |      90 | 24000.00 |
+| De Haan        | 17000.00 |      90 | 24000.00 |
+| Higgins        | 12000.00 |     110 | 12000.00 |
+| Gietz          |  8300.00 |     110 | 12000.00 |
+| Reinhard       |  8100.00 |     110 | 12000.00 |
+| Duric          |  5400.00 |     110 | 12000.00 |
+| Loermans       |  5200.00 |     110 | 12000.00 |
++----------------+----------+---------+----------+
+39 rows in set (0.01 sec)
+
+--------------
+/* Query 2
+    From the provided example output, I believe the instructions
+    should be for credit_limit >= 1000 not 100
+ */
+CREATE OR REPLACE VIEW MAJOR_CUSTOMER AS
+SELECT cust_id, first_name, last_name, credit_limit
+FROM customers
+WHERE credit_limit >= 1000
+--------------
+
+Query OK, 0 rows affected (0.03 sec)
+
+--------------
+SELECT * FROM MAJOR_CUSTOMER
+--------------
+
++---------+------------+-----------+--------------+
+| cust_id | first_name | last_name | credit_limit |
++---------+------------+-----------+--------------+
+|  400300 | Arnold     | McGold    |         6000 |
+|  401890 | William    | Northrep  |         1750 |
+|  403000 | Sally      | Williams  |         6000 |
+|  403010 | Elisha     | Otis      |         6000 |
+|  403050 | Alexis     | Hamilton  |         6000 |
+|  403100 | James      | Stevenson |         6000 |
+|  403500 | JAMES      | Stevenson |         6000 |
+|  403750 | Mary       | O'Leary   |         6000 |
+|  403760 | Mary       | O'Leary   |         6000 |
+|  404000 | Frederick  | Olmsted   |         3500 |
+|  404100 | D. K.      | Button    |         3500 |
+|  404150 | Tom        | Dancer    |         3500 |
+|  404180 | Danielle   | Shay      |         3500 |
+|  404890 | Florence   | Kelley    |         1750 |
+|  404900 | Al         | Williams  |         1750 |
+|  404950 | William    | Morris    |         1750 |
+|  408770 | Clem       | Clay      |         7500 |
+|  409010 | William    | Morris    |         1750 |
+|  409020 | William    | Max       |         1750 |
+|  409030 | Barry      | Mazur     |         6000 |
+|  409150 | Joan       | Martin    |         1750 |
+|  409160 | Jane       | Martin    |         1750 |
+|  409190 | NULL       | Prince    |         1750 |
+|  900300 | Arnold     | McGold    |         6000 |
+|  903000 | Arnold     | McGold    |         6000 |
+|  915001 | Abigail    | Adams     |         1750 |
++---------+------------+-----------+--------------+
+26 rows in set (0.02 sec)
+
+--------------
+/* Query 3 */
+CREATE OR REPLACE VIEW ITEM_ORDERED AS
+SELECT  p.prod_id, p.prod_desc, p.prod_list_price, o.ord_id, o.ord_date, 
+        d.quantity_ordered, d.quoted_price
+FROM products p
+JOIN order_details d
+ON p.prod_id = d.prod_id
+JOIN orders o
+ON o.ord_id = d.ord_id
+ORDER BY o.ord_id, p.prod_desc
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+/*  Query 4 
+    Again from sample output, I am assuming the desired
+    order be greater than 100, i.e. quantity_ordered * price > 100;
+    instructions for this assignment are a bit confusing when looking
+    at the desired output.
+
+*/
+SELECT  prod_id, prod_desc, prod_list_price, ord_id, ord_date,
+        quantity_ordered, quoted_price
+FROM ITEM_ORDERED
+WHERE quantity_ordered * quoted_price > 100
+--------------
+
++---------+------------------------------------------------+-----------------+--------+---------------------+------------------+--------------+
+| prod_id | prod_desc                                      | prod_list_price | ord_id | ord_date            | quantity_ordered | quoted_price |
++---------+------------------------------------------------+-----------------+--------+---------------------+------------------+--------------+
+|    1030 | Basketball                                     |           29.95 |    105 | 2013-10-01 00:00:00 |               12 |        25.00 |
+|    1020 | Cork-backed dartboard with hanger              |           12.95 |    105 | 2013-10-01 00:00:00 |               12 |        12.95 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    105 | 2013-10-01 00:00:00 |                5 |       150.00 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    106 | 2013-10-01 00:00:00 |                1 |       255.95 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    109 | 2013-10-12 00:00:00 |                1 |       149.99 |
+|    1090 | Gas grill                                      |          149.99 |    110 | 2013-10-12 00:00:00 |                1 |       149.99 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    110 | 2013-10-12 00:00:00 |                1 |       149.99 |
+|    1150 | Cat exerciser                                  |            4.99 |    111 | 2013-11-01 00:00:00 |               50 |         4.99 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    114 | 2013-11-08 00:00:00 |                5 |       125.00 |
+|    1120 | Full-sized Washer                              |          549.99 |    115 | 2013-11-08 00:00:00 |                4 |       475.00 |
+|    1000 | Seven speed BnD hand mixer, black              |          125.00 |    115 | 2013-11-08 00:00:00 |                2 |       100.00 |
+|    1100 | Twelve-speed Blender                           |           49.99 |    115 | 2013-11-08 00:00:00 |                4 |        45.00 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    117 | 2013-11-28 00:00:00 |                4 |        75.00 |
+|    1125 | Low Energy Dryer                               |          500.00 |    118 | 2013-11-28 00:00:00 |                4 |       475.00 |
+|    1070 | Steam and dry iron SunShine, Yellow            |           25.50 |    119 | 2013-11-28 00:00:00 |               10 |        22.50 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    120 | 2014-01-02 00:00:00 |               10 |       175.00 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    121 | 2014-01-03 00:00:00 |               20 |       175.00 |
+|    1040 | Super Flyer Treadmill                          |          349.95 |    121 | 2014-01-03 00:00:00 |                1 |       300.25 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    128 | 2013-12-15 00:00:00 |                2 |       255.95 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    129 | 2013-12-15 00:00:00 |                3 |        99.99 |
+|    1120 | Full-sized Washer                              |          549.99 |    130 | 2013-12-30 00:00:00 |                1 |       500.00 |
+|    1090 | Gas grill                                      |          149.99 |    130 | 2013-12-30 00:00:00 |                1 |       145.00 |
+|    1125 | Low Energy Dryer                               |          500.00 |    130 | 2013-12-30 00:00:00 |                1 |       500.00 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    218 | 2013-08-08 00:00:00 |                3 |        75.99 |
+|    1125 | Low Energy Dryer                               |          500.00 |    218 | 2013-08-08 00:00:00 |                5 |       500.00 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    223 | 2013-08-05 00:00:00 |                3 |        75.99 |
+|    1150 | Cat exerciser                                  |            4.99 |    223 | 2013-08-05 00:00:00 |               50 |         7.25 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    223 | 2013-08-05 00:00:00 |                1 |       148.99 |
+|    1090 | Gas grill                                      |          149.99 |    224 | 2013-08-07 00:00:00 |               10 |       145.99 |
+|    1070 | Steam and dry iron SunShine, Yellow            |           25.50 |    224 | 2013-08-07 00:00:00 |               10 |        15.00 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    227 | 2013-08-01 00:00:00 |                3 |        75.99 |
+|    1150 | Cat exerciser                                  |            4.99 |    227 | 2013-08-01 00:00:00 |               50 |         4.25 |
+|    1100 | Twelve-speed Blender                           |           49.99 |    301 | 2014-06-04 00:00:00 |                1 |       205.00 |
+|    1140 | Bird cage- simple; wire frame two feeder trays |           14.99 |    302 | 2014-06-04 00:00:00 |               10 |        12.00 |
+|    1040 | Super Flyer Treadmill                          |          349.95 |    302 | 2014-06-04 00:00:00 |                1 |       349.95 |
+|    1000 | Seven speed BnD hand mixer, black              |          125.00 |    303 | 2014-06-10 00:00:00 |                1 |       125.00 |
+|    1120 | Full-sized Washer                              |          549.99 |    306 | 2014-06-04 00:00:00 |                1 |       500.00 |
+|    1125 | Low Energy Dryer                               |          500.00 |    306 | 2014-06-04 00:00:00 |                1 |       500.00 |
+|    1120 | Full-sized Washer                              |          549.99 |    307 | 2014-06-04 00:00:00 |                5 |       450.00 |
+|    1125 | Low Energy Dryer                               |          500.00 |    307 | 2014-06-04 00:00:00 |                5 |       450.00 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    312 | 2014-06-07 00:00:00 |               20 |       125.00 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    312 | 2014-06-07 00:00:00 |               10 |       140.50 |
+|    1050 | Deluxe Stationary bike                         |          269.95 |    312 | 2014-06-07 00:00:00 |               10 |       250.00 |
+|    1040 | Super Flyer Treadmill                          |          349.95 |    312 | 2014-06-07 00:00:00 |               10 |       300.00 |
+|    1000 | Seven speed BnD hand mixer, black              |          125.00 |    313 | 2014-06-07 00:00:00 |                1 |       125.00 |
+|    4576 | Primo brand of catnip for your favorite cat    |           29.95 |    324 | 2014-06-11 00:00:00 |               20 |        29.95 |
+|    1120 | Full-sized Washer                              |          549.99 |    378 | 2014-06-14 00:00:00 |                5 |       450.00 |
+|    1125 | Low Energy Dryer                               |          500.00 |    378 | 2014-06-14 00:00:00 |                5 |       450.00 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    390 | 2014-06-04 00:00:00 |                8 |       175.00 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    395 | 2014-06-04 00:00:00 |               15 |       195.00 |
+|    5002 | 16 oz Jacketed Graphite Ball-peen hammer       |           23.00 |    400 | 2013-10-15 00:00:00 |                5 |        23.00 |
+|    5005 | Steel Shingler hammerhammer                    |           45.00 |    400 | 2013-10-15 00:00:00 |                5 |        45.00 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    405 | 2013-11-19 00:00:00 |                1 |       255.95 |
+|    1050 | Deluxe Stationary bike                         |          269.95 |    405 | 2013-11-19 00:00:00 |                1 |       269.95 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    405 | 2013-11-19 00:00:00 |                1 |       150.00 |
+|    1040 | Super Flyer Treadmill                          |          349.95 |    405 | 2013-11-19 00:00:00 |                1 |       349.95 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    411 | 2014-07-01 00:00:00 |                2 |       255.95 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    412 | 2014-07-01 00:00:00 |                1 |       149.99 |
+|    1110 | Electric Pancake griddle                       |           49.99 |    413 | 2014-07-07 00:00:00 |               10 |        49.99 |
+|    1020 | Cork-backed dartboard with hanger              |           12.95 |    414 | 2014-07-20 00:00:00 |               13 |        12.95 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    415 | 2014-07-23 00:00:00 |                5 |        75.99 |
+|    1125 | Low Energy Dryer                               |          500.00 |    415 | 2014-07-23 00:00:00 |                5 |       500.00 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    503 | 2014-01-04 00:00:00 |                1 |       149.99 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    504 | 2014-01-11 00:00:00 |                1 |       149.99 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    505 | 2014-01-12 00:00:00 |                1 |       255.95 |
+|    1090 | Gas grill                                      |          149.99 |    507 | 2014-02-01 00:00:00 |                1 |       145.99 |
+|    1152 | Cat pillow, removable leather cover            |           55.28 |    508 | 2014-02-01 00:00:00 |                4 |        55.25 |
+|    1152 | Cat pillow, removable leather cover            |           55.28 |    508 | 2014-02-01 00:00:00 |                6 |        27.15 |
+|    1090 | Gas grill                                      |          149.99 |    509 | 2014-02-12 00:00:00 |                5 |       149.99 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    509 | 2014-02-12 00:00:00 |                2 |       149.99 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    511 | 2014-02-01 00:00:00 |                1 |       255.95 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    511 | 2014-02-01 00:00:00 |                1 |       149.99 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    518 | 2014-02-03 00:00:00 |                3 |        75.99 |
+|    1125 | Low Energy Dryer                               |          500.00 |    518 | 2014-02-03 00:00:00 |                1 |       500.00 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    523 | 2014-04-05 00:00:00 |                1 |       149.99 |
+|    1090 | Gas grill                                      |          149.99 |    524 | 2014-04-07 00:00:00 |                1 |       145.99 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    527 | 2014-05-01 00:00:00 |                3 |        75.99 |
+|    1150 | Cat exerciser                                  |            4.99 |    527 | 2014-05-01 00:00:00 |               50 |         4.25 |
+|    1030 | Basketball                                     |           29.95 |    528 | 2014-05-01 00:00:00 |               16 |        20.50 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    528 | 2014-05-01 00:00:00 |               15 |       150.00 |
+|    1020 | Cork-backed dartboard with hanger              |           12.95 |    529 | 2014-05-12 00:00:00 |               10 |        12.95 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    529 | 2014-05-12 00:00:00 |                1 |       149.99 |
+|    1050 | Deluxe Stationary bike                         |          269.95 |    535 | 2014-05-12 00:00:00 |                1 |       225.00 |
+|    1040 | Super Flyer Treadmill                          |          349.95 |    535 | 2014-05-12 00:00:00 |                1 |       300.00 |
+|    1050 | Deluxe Stationary bike                         |          269.95 |    536 | 2014-05-12 00:00:00 |                1 |       225.00 |
+|    1040 | Super Flyer Treadmill                          |          349.95 |    536 | 2014-05-12 00:00:00 |                1 |       300.00 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    550 | 2014-08-02 00:00:00 |               10 |       175.00 |
+|    1040 | Super Flyer Treadmill                          |          349.95 |    550 | 2014-08-02 00:00:00 |                1 |       300.25 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    551 | 2014-08-03 00:00:00 |               20 |       175.00 |
+|    1080 | Cornpopper 12 quart automatic shutoff          |           25.00 |    605 | 2013-09-05 00:00:00 |               12 |        25.00 |
+|    1080 | Cornpopper 12 quart automatic shutoff          |           25.00 |    605 | 2013-09-05 00:00:00 |               12 |        25.00 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    605 | 2013-09-05 00:00:00 |                5 |       125.00 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    605 | 2013-09-05 00:00:00 |               12 |       112.95 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    605 | 2013-09-05 00:00:00 |                1 |       125.00 |
+|    1070 | Steam and dry iron SunShine, Yellow            |           25.50 |    607 | 2013-09-15 00:00:00 |               10 |        22.25 |
+|    1080 | Cornpopper 12 quart automatic shutoff          |           25.00 |    609 | 2013-09-27 00:00:00 |                5 |        25.00 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    609 | 2013-09-27 00:00:00 |               20 |       175.00 |
+|    1040 | Super Flyer Treadmill                          |          349.95 |    609 | 2013-09-27 00:00:00 |               20 |       300.25 |
+|    1080 | Cornpopper 12 quart automatic shutoff          |           25.00 |    611 | 2013-09-30 00:00:00 |               12 |        25.00 |
+|    1141 | Bird cage- deluxe;floor model, with fly space  |           99.99 |    718 | 2014-04-08 00:00:00 |                3 |        75.99 |
+|    1125 | Low Energy Dryer                               |          500.00 |    718 | 2014-04-08 00:00:00 |                1 |       500.00 |
+|    1080 | Cornpopper 12 quart automatic shutoff          |           25.00 |    805 | 2014-01-05 00:00:00 |               12 |        25.00 |
+|    1060 | Deluxe Mountain bike                           |          255.95 |    805 | 2014-01-05 00:00:00 |                5 |       125.00 |
+|    1130 | Mini freezer, sized for the office             |          149.99 |    805 | 2014-01-05 00:00:00 |               12 |       112.95 |
+|    1070 | Steam and dry iron SunShine, Yellow            |           25.50 |    807 | 2014-01-15 00:00:00 |               10 |        22.25 |
+|    1010 | Set of 12 barbells 15 pounds                   |          150.00 |    808 | 2014-01-26 00:00:00 |                1 |       125.00 |
+|    1080 | Cornpopper 12 quart automatic shutoff          |           25.00 |    809 | 2014-01-27 00:00:00 |                5 |        25.00 |
+|    1080 | Cornpopper 12 quart automatic shutoff          |           25.00 |    811 | 2014-01-31 00:00:00 |               12 |        25.00 |
+|    1080 | Cornpopper 12 quart automatic shutoff          |           25.00 |    811 | 2014-01-31 00:00:00 |               12 |        25.00 |
++---------+------------------------------------------------+-----------------+--------+---------------------+------------------+--------------+
+109 rows in set (0.00 sec)
+
+--------------
+/* Query 5 */
+CREATE OR REPLACE VIEW MY_DEPARTMENTS AS
+SELECT * FROM departments
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+SELECT * FROM MY_DEPARTMENTS
+--------------
+
++---------+------------------+------------+--------+
+| dept_id | department_name  | manager_id | loc_id |
++---------+------------------+------------+--------+
+|      10 | Administration   |        200 |   2700 |
+|      20 | Marketing        |        201 |   1800 |
+|      50 | Shipping         |        124 |   1500 |
+|      60 | IT               |        103 |   1400 |
+|      80 | Sales - Europe   |        149 |   2100 |
+|      85 | Sales - Americas |        149 |   2100 |
+|      90 | Executive        |        100 |   2700 |
+|     110 | Accounting       |        205 |   2700 |
+|     190 | Contracting      |       NULL |   2700 |
++---------+------------------+------------+--------+
+9 rows in set (0.00 sec)
+
+--------------
+/* Query 6 */
+CREATE OR REPLACE VIEW V_SALARIES AS
+SELECT MAX(e.salary) Highestsal, MIN(e.salary) Lowestsal, AVG(e.salary) Avgsal, d.department_name
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id
+GROUP BY e.dept_id
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+/* Query 7 */
+CREATE OR REPLACE VIEW PROD_HW_APL AS
+SELECT prod_id, prod_name, prod_list_price
+FROM products
+WHERE catg_id IN ('APL', 'HW')
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+/* Query 8 */
+CREATE OR REPLACE VIEW CUST_ORDERS AS
+SELECT o.ord_id, o.ord_date, o.cust_id, p.catg_id, p.prod_id
+FROM order_details d
+JOIN orders o ON o.ord_id = d.ord_id
+JOIN products p ON p.prod_id = d.prod_id
+ORDER BY ord_id, prod_id DESC
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+/* Query 9 */
+CREATE OR REPLACE VIEW ORD_TOTAL AS
+SELECT ord_id, SUM(quoted_price * quantity_ordered) 'total due'
+FROM order_details
+GROUP BY ord_id
+ORDER BY ord_id
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> notee
