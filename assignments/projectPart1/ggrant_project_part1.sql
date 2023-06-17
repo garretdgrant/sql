@@ -68,7 +68,7 @@ CREATE TABLE STUDENT(
     student_id          INT NOT NULL,
     first_name          VARCHAR(25) NOT NULL,
     last_name           VARCHAR(25) NOT NULL,
-    reg_year            YEAR NOT NULL,
+    reg_year            DATE NOT NULL,
     email               VARCHAR(25) NOT NULL, 
     parent_id           INT NOT NULL,
     CONSTRAINT  student_id_pk       PRIMARY KEY(student_id),
@@ -82,7 +82,7 @@ CREATE TABLE STUDENT(
 /*COURSE Table*/
 CREATE TABLE COURSE(
     course_id           INT NOT NULL,
-    course_name         VARCHAR(25) NOT NULL,
+    course_name         VARCHAR(50) NOT NULL,
     session_id          INT NOT NULL,
     dept_id             INT NOT NULL,
     logon_id            VARCHAR(25),
@@ -103,7 +103,7 @@ CREATE TABLE COURSE(
 CREATE TABLE EXAM_TYPE(
     exam_type           VARCHAR(3) NOT NULL,
     name                VARCHAR(25) NOT NULL,
-    description         VARCHAR(25) NOT NULL,
+    description         VARCHAR(50) NOT NULL,
     CONSTRAINT exam_type_pk     PRIMARY KEY(exam_type)
 )ENGINE = INNODB;
 
@@ -111,12 +111,10 @@ CREATE TABLE EXAM_TYPE(
 /*EXAM Table*/
 CREATE TABLE EXAM(
     exam_id             INT NOT NULL,
-    session_id          INT NOT NULL,
+    start_date          DATE NOT NULL,
     exam_type           VARCHAR(3) NOT NULL,
     course_id           INT NOT NULL,
     CONSTRAINT exam_id_pk       PRIMARY KEY(exam_id),
-    CONSTRAINT session_id_fk2    FOREIGN KEY(session_id)
-        REFERENCES ACADEMIC_SESSION(session_id),
     CONSTRAINT course_id_fk     FOREIGN KEY(course_id)
         REFERENCES  COURSE(course_id),
     CONSTRAINT exam_type_fk     FOREIGN KEY(exam_type)
@@ -200,7 +198,7 @@ CREATE TABLE FACULTY_COURSE(
 -- /*FACULTY_LOGIN Table*/
 CREATE TABLE FACULTY_LOGIN(
     faculty_id          INT NOT NULL,
-    login_date_time     DATETIME,
+    login_date_time     DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fac_log_cpk      PRIMARY KEY(faculty_id, login_date_time),
     CONSTRAINT fac_log_fac_fk   FOREIGN KEY(faculty_id)
         REFERENCES FACULTY(faculty_id)
