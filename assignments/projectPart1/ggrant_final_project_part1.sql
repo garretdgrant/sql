@@ -15,7 +15,7 @@
 *   source path_to_file/ggrant_final_project_part1.sql
 */
 
-DELIMITER ;
+
 
 /* Drop the database if it already exists*/
 DROP DATABASE IF EXISTS university;
