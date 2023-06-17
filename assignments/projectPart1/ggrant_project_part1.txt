@@ -1,4 +1,4 @@
-mysql> source /home/garretg/foothillCollege/databaseFHC/sql/assignments/projectPart1/ggrant_final_project_part1.sql
+mysql> source /home/garretg/foothillCollege/databaseFHC/sql/assignments/projectPart1/ggrant_project_part1.sql
 --------------
 /*  Author: Garret Grant
 *   CS31A - Intro to Database Management Systems, Spring 2023
@@ -17,11 +17,8 @@ mysql> source /home/garretg/foothillCollege/databaseFHC/sql/assignments/projectP
 *   source path_to_file/ggrant_final_project_part1.sql
 */
 
-DELIMITER
---------------
 
-ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DELIMITER' at line 18
---------------
+
 /* Drop the database if it already exists*/
 DROP DATABASE IF EXISTS university
 --------------
@@ -32,7 +29,7 @@ Query OK, 13 rows affected (0.11 sec)
 CREATE DATABASE university
 --------------
 
-Query OK, 1 row affected (0.01 sec)
+Query OK, 1 row affected (0.00 sec)
 
 Database changed
 --------------
@@ -70,7 +67,7 @@ Query OK, 0 rows affected, 1 warning (0.00 sec)
 DROP TABLE IF EXISTS FACULTY_COURSE
 --------------
 
-Query OK, 0 rows affected, 1 warning (0.00 sec)
+Query OK, 0 rows affected, 1 warning (0.01 sec)
 
 --------------
 DROP TABLE IF EXISTS FACULTY_LOGIN
@@ -88,7 +85,7 @@ CREATE TABLE ACADEMIC_SESSION(
 ) ENGINE = INNODB
 --------------
 
-Query OK, 0 rows affected (0.03 sec)
+Query OK, 0 rows affected (0.04 sec)
 
 --------------
 /*DEPARTMENT Table*/
@@ -123,7 +120,7 @@ CREATE TABLE STUDENT(
     student_id          INT NOT NULL,
     first_name          VARCHAR(25) NOT NULL,
     last_name           VARCHAR(25) NOT NULL,
-    reg_year            YEAR NOT NULL,
+    reg_year            DATE NOT NULL,
     email               VARCHAR(25) NOT NULL, 
     parent_id           INT NOT NULL,
     CONSTRAINT  student_id_pk       PRIMARY KEY(student_id),
@@ -139,7 +136,7 @@ Query OK, 0 rows affected (0.03 sec)
 /*COURSE Table*/
 CREATE TABLE COURSE(
     course_id           INT NOT NULL,
-    course_name         VARCHAR(25) NOT NULL,
+    course_name         VARCHAR(50) NOT NULL,
     session_id          INT NOT NULL,
     dept_id             INT NOT NULL,
     logon_id            VARCHAR(25),
@@ -163,7 +160,7 @@ Query OK, 0 rows affected (0.04 sec)
 CREATE TABLE EXAM_TYPE(
     exam_type           VARCHAR(3) NOT NULL,
     name                VARCHAR(25) NOT NULL,
-    description         VARCHAR(25) NOT NULL,
+    description         VARCHAR(50) NOT NULL,
     CONSTRAINT exam_type_pk     PRIMARY KEY(exam_type)
 )ENGINE = INNODB
 --------------
@@ -174,12 +171,10 @@ Query OK, 0 rows affected (0.02 sec)
 /*EXAM Table*/
 CREATE TABLE EXAM(
     exam_id             INT NOT NULL,
-    session_id          INT NOT NULL,
+    start_date          DATE NOT NULL,
     exam_type           VARCHAR(3) NOT NULL,
     course_id           INT NOT NULL,
     CONSTRAINT exam_id_pk       PRIMARY KEY(exam_id),
-    CONSTRAINT session_id_fk2    FOREIGN KEY(session_id)
-        REFERENCES ACADEMIC_SESSION(session_id),
     CONSTRAINT course_id_fk     FOREIGN KEY(course_id)
         REFERENCES  COURSE(course_id),
     CONSTRAINT exam_type_fk     FOREIGN KEY(exam_type)
@@ -226,7 +221,7 @@ CREATE TABLE EXAM_RESULT(
 )ENGINE = INNODB
 --------------
 
-Query OK, 0 rows affected (0.04 sec)
+Query OK, 0 rows affected (0.03 sec)
 
 --------------
 /*STUDENT_ATT Table*/
@@ -243,7 +238,7 @@ CREATE TABLE STUDENT_ATT(
 )ENGINE = INNODB
 --------------
 
-Query OK, 0 rows affected (0.02 sec)
+Query OK, 0 rows affected (0.03 sec)
 
 --------------
 /*STUDENT_COURSE Table*/
@@ -292,7 +287,7 @@ Query OK, 0 rows affected (0.00 sec)
 --------------
 CREATE TABLE FACULTY_LOGIN(
     faculty_id          INT NOT NULL,
-    login_date_time     DATETIME,
+    login_date_time     DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fac_log_cpk      PRIMARY KEY(faculty_id, login_date_time),
     CONSTRAINT fac_log_fac_fk   FOREIGN KEY(faculty_id)
         REFERENCES FACULTY(faculty_id)
