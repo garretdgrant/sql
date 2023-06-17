@@ -1,10 +1,28 @@
+/*  Author: Garret Grant
+*   CS31A - Intro to Database Management Systems, Spring 2023
+*   Script Description -   This script creates a 'University Management System'
+*   database. It includes tables for Departments, Courses, Faculty, Students,
+*   Parents, Attendance, Exams and Results, and Faculty Log Times. Each table 
+*   stores specific data related to university operations. Departments and 
+*   Courses are linked by faculty, and Students are connected to their 
+*   respective courses, departments, and parents. Attendance is tracked per 
+*   course, and exam results are stored and linked to respective courses and 
+*   students. Faculty login and logout times are also recorded for reporting 
+*   purposes. This script provides a comprehensive system for managing a 
+*   university's academic and administrative needs.
+*   
+*   Running the script - Run the following command in mysql
+*   source path_to_file/ggrant_final_project_part1.sql
+*/
 
-delimiter ;
+DELIMITER ;
 
 /* Drop the database if it already exists*/
 DROP DATABASE IF EXISTS university;
 CREATE DATABASE university;
 use university;
+
+
 
 /*Remove any previous versions of tables if they exist*/
 DROP TABLE IF EXISTS FACULTY;
@@ -23,6 +41,7 @@ CREATE TABLE ACADEMIC_SESSION(
     CONSTRAINT session_name_un      UNIQUE(session_name)
 ) ENGINE = INNODB;
 
+
 /*DEPARTMENT Table*/
 CREATE TABLE DEPARTMENT(
     dept_id         INT NOT NULL,
@@ -31,6 +50,7 @@ CREATE TABLE DEPARTMENT(
     CONSTRAINT dept_id_pk   PRIMARY KEY(dept_id),
     CONSTRAINT dept_name_un UNIQUE(dept_name)
 )ENGINE = INNODB;
+
 
 /*PARENT_INFO Table - student must have 1 parent minimum*/
 CREATE TABLE PARENT_INFO(
@@ -41,6 +61,7 @@ CREATE TABLE PARENT_INFO(
     parent2_ln          VARCHAR(25),
     CONSTRAINT parent_id_pk PRIMARY KEY(parent_id)
 )ENGINE = INNODB;
+
 
 /*STUDENT Table*/
 CREATE TABLE STUDENT(
@@ -55,6 +76,7 @@ CREATE TABLE STUDENT(
     CONSTRAINT  parent_id_fk        FOREIGN KEY(parent_id)
         REFERENCES PARENT_INFO(parent_id)         
 )ENGINE = INNODB;
+
 
 
 /*COURSE Table*/
@@ -76,6 +98,7 @@ CREATE TABLE COURSE(
         REFERENCES DEPARTMENT(dept_id)
 )ENGINE = INNODB;
 
+
 /*EXAM_TYPE Table*/
 CREATE TABLE EXAM_TYPE(
     exam_type           VARCHAR(3) NOT NULL,
@@ -83,6 +106,7 @@ CREATE TABLE EXAM_TYPE(
     description         VARCHAR(25) NOT NULL,
     CONSTRAINT exam_type_pk     PRIMARY KEY(exam_type)
 )ENGINE = INNODB;
+
 
 /*EXAM Table*/
 CREATE TABLE EXAM(
@@ -98,6 +122,7 @@ CREATE TABLE EXAM(
     CONSTRAINT exam_type_fk     FOREIGN KEY(exam_type)
         REFERENCES EXAM_TYPE(exam_type)
 )ENGINE = INNODB;
+
 
 /*FACULTY Table*/
 CREATE TABLE FACULTY(
@@ -149,17 +174,36 @@ CREATE TABLE STUDENT_ATT(
 
 /*STUDENT_COURSE Table*/
 CREATE TABLE STUDENT_COURSE(
-
+    student_id          INT NOT NULL,
+    course_id           INT NOT NULL,
+    grade               CHAR(1) NOT NULL,
+    CONSTRAINT stud_cource_cpk PRIMARY KEY(student_id, course_id),
+    CONSTRAINT stud_cou_fk          FOREIGN KEY(student_id)
+        REFERENCES STUDENT(student_id),
+    CONSTRAINT scour_cour_fk        FOREIGN KEY(course_id)
+        REFERENCES  COURSE(course_id),
+    CONSTRAINT sc_grade_check       CHECK(grade IN ('A','B','C','D','F'))
 )ENGINE = INNODB;
 
-/*FACULTY_COURSE Table*/
+-- /*FACULTY_COURSE Table*/
 CREATE TABLE FACULTY_COURSE(
-
+    faculty_id          INT NOT NULL,
+    course_id           INT NOT NULL,
+    contact_hrs         INT NOT NULL,
+    CONSTRAINT fc_cpk           PRIMARY KEY(faculty_id, course_id),
+    CONSTRAINT fc_fac_id_fk     FOREIGN KEY(faculty_id)
+        REFERENCES  FACULTY(faculty_id),
+    CONSTRAINT fc_cou_id_fk     FOREIGN KEY(course_id)
+        REFERENCES COURSE(course_id) 
 )ENGINE = INNODB;
 
-/*FACULTY_LOGIN Table*/
+-- /*FACULTY_LOGIN Table*/
 CREATE TABLE FACULTY_LOGIN(
-
+    faculty_id          INT NOT NULL,
+    login_date_time     DATETIME,
+    CONSTRAINT fac_log_cpk      PRIMARY KEY(faculty_id, login_date_time),
+    CONSTRAINT fac_log_fac_fk   FOREIGN KEY(faculty_id)
+        REFERENCES FACULTY(faculty_id)
 )ENGINE = INNODB;
 
 
